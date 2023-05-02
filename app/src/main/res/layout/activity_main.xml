@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/winPlayer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="22sp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/green"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/currentPlayer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Player : Player Red"
+            android:textSize="20sp"
+            android:textColor="@color/teal_700"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/winPlayer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewRed"
+        android:layout_width="42dp"
+        android:layout_margin="4dp"
+        android:layout_height="42dp"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="8dp"
+        android:layout_marginEnd="100dp"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cardViewYellow">
+
+        <ImageView
+            android:id="@+id/imgIconRed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/red_light"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvPlayer1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player Red"
+        android:textSize="16sp"
+        android:textColor="@color/green"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewRed"
+        app:layout_constraintStart_toStartOf="@id/cardViewRed" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewYellow"
+        android:layout_width="42dp"
+        android:layout_margin="4dp"
+        android:layout_height="42dp"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="8dp"
+        android:layout_marginStart="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintStart_toEndOf="@id/cardViewRed"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/imgIconYellow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:background="@color/yellow_light"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvViewCrosx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player Yellow"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/green"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewYellow"
+        app:layout_constraintEnd_toEndOf="@+id/cardViewYellow"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="345dp"
+        android:layout_margin="6dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:padding="10dp"
+        android:background="@drawable/recycler_border_style"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:spanCount="7"
+        tools:listitem="@layout/grid_item" />
+
+<!--    <View-->
+<!--        android:id="@+id/viewVerticalOne"-->
+<!--        android:layout_width="2dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintHorizontal_chainStyle="spread_inside"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/viewVerticalTwo"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+
+<!--    <View-->
+<!--        android:id="@+id/viewVerticalTwo"-->
+<!--        android:layout_width="2dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/viewVerticalOne"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/viewVerticalThree"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+
+
+<!--    <View-->
+<!--        android:id="@+id/viewVerticalThree"-->
+<!--        android:layout_width="2dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/viewVerticalTwo"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/viewVerticalFour"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+<!--    <View-->
+<!--        android:id="@+id/viewVerticalFour"-->
+<!--        android:layout_width="2dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/viewVerticalThree"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/viewVerticalFive"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+<!--    <View-->
+<!--        android:id="@+id/viewVerticalFive"-->
+<!--        android:layout_width="2dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/viewVerticalFour"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/viewVerticalSix"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+<!--    <View-->
+<!--        android:id="@+id/viewVerticalSix"-->
+<!--        android:layout_width="2dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/viewVerticalFive"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/viewVerticalSeven"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+<!--    <View-->
+<!--        android:id="@+id/viewVerticalSeven"-->
+<!--        android:layout_width="2dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/viewVerticalSix"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/viewVerticalEight"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+
+
+<!--    <View-->
+<!--        android:id="@+id/viewVerticalEight"-->
+<!--        android:layout_width="2dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/viewVerticalSeven"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+
+
+
+
+
+
+<!--    <View-->
+<!--        android:id="@+id/viewHorizontalOne"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintVertical_chainStyle="spread_inside"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/recyclerView"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/recyclerView"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/viewHorizontalTwo"/>-->
+
+<!--    <View-->
+<!--        android:id="@+id/viewHorizontalTwo"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/viewHorizontalOne"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/recyclerView"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/viewHorizontalThree"/>-->
+<!--    <View-->
+<!--        android:id="@+id/viewHorizontalThree"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/viewHorizontalTwo"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/recyclerView"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/viewHorizontalFour"/>-->
+
+<!--    <View-->
+<!--        android:id="@+id/viewHorizontalFour"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/viewHorizontalThree"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/recyclerView"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/viewHorizontalFive"/>-->
+
+<!--    <View-->
+<!--        android:id="@+id/viewHorizontalFive"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/viewHorizontalFour"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/recyclerView"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/viewHorizontalSix"/>-->
+
+<!--    <View-->
+<!--        android:id="@+id/viewHorizontalSix"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/viewHorizontalFive"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/recyclerView"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/viewHorizontalSeven"/>-->
+
+
+
+<!--    <View-->
+<!--        android:id="@+id/viewHorizontalSeven"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/viewHorizontalSix"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/recyclerView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/recyclerView"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"/>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
