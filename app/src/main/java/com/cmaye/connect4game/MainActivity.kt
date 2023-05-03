@@ -15,7 +15,7 @@ import com.cmaye.connect4game.model.Coin
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var mAdapter: RecyclerViewAdapter
+    private lateinit var mAdapter: TestAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setUpRecycler() {
-        mAdapter = RecyclerViewAdapter()
-        mAdapter.setOnClickListener(object : RecyclerViewAdapter.OnClickListener {
+        mAdapter = TestAdapter()
+        mAdapter.setOnClickListener(object : TestAdapter.OnClickListener {
 
             override fun isCheck(currentPlayer: String, list: MutableList<Coin>) {
                 binding.currentPlayer.text = "Current Player : $currentPlayer"
