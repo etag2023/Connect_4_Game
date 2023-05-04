@@ -99,8 +99,9 @@ class MainActivity : AppCompatActivity() {
 //        for (id in 1..totalCount) {
 //            list.add(Coin(id, Constant.Player.None))
 //        }
-        mAdapter.differ.submitList(list.reversed())
+//        mAdapter.differ.submitList(list.reversed())
 
+        mAdapter.differ.submitList(list)
 
     }
 

@@ -1,5 +1,6 @@
 package com.cmaye.connect4game
 
+import android.provider.SyncStateContract.Columns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -26,10 +27,7 @@ class TestAdapter : RecyclerView.Adapter<TestAdapter.ViewHolder>() {
 
         fun bindView(item: Coin) {
             with(binding) {
-                Log.e("winner",item.toString())
-
-                if (item.isWinner)
-                {
+                if (item.isWinner) {
                     when (item.player) {
                         Constant.Player.RedPlayer -> {
                             imgIcon.setBackgroundResource(R.drawable.winner_red_color)
@@ -42,10 +40,9 @@ class TestAdapter : RecyclerView.Adapter<TestAdapter.ViewHolder>() {
 
                         }
                     }
-                }else{
+                } else {
                     when (item.player) {
                         Constant.Player.RedPlayer -> {
-//                        imgIcon.setBackgroundResource(R.drawable.winner_red_color)
                             imgIcon.setBackgroundColor(Constant.redColor)
                         }
                         Constant.Player.YellowPlayer -> {
@@ -61,14 +58,14 @@ class TestAdapter : RecyclerView.Adapter<TestAdapter.ViewHolder>() {
                 cardView.setOnClickListener {
 
 
-
-                    Log.e("index",adapterPosition.toString())
+                    Log.e("index", adapterPosition.toString())
 
                     if (item.player != Constant.Player.None) {
                         return@setOnClickListener
                     }
 
-                    if (item.id in 1..Constant.columnCount) {
+                    // last row item
+                    if (item.id in ((Constant.rowCount * Constant.columnCount) - 6)..(Constant.rowCount * Constant.columnCount)) {
                         getCurrentItemList()[adapterPosition].player = currentPlayer
                         val isWin =
                             checkWin(getCurrentItemList()[adapterPosition].id, currentPlayer)
@@ -80,17 +77,8 @@ class TestAdapter : RecyclerView.Adapter<TestAdapter.ViewHolder>() {
                         notifyItemChanged(adapterPosition)
                         return@setOnClickListener
                     }
-//
-//                      9-7=2           8
-//                    if (item.id in Constant.columnCount.plus(1)..totalRowColumnCount) {
-//                        if (getCurrentItemList()[adapterPosition.plus(Constant.columnCount)].player != Constant.Player.None) {
-//                            getCurrentItemList()[adapterPosition].player = currentPlayer
-//                            toggleCurrentPlayer()
-//                            notifyItemChanged(adapterPosition)
-//                        }
-//                    }
 
-                    val previousItemId = item.id - Constant.columnCount
+                    val previousItemId = item.id + Constant.columnCount
                     val previousItem = getCurrentItemList().find { it.id == previousItemId }
 
                     if (previousItem != null) {
@@ -148,248 +136,218 @@ class TestAdapter : RecyclerView.Adapter<TestAdapter.ViewHolder>() {
 
     fun checkWin(id: Int, player: Constant.Player): Boolean {
 
-        Log.e("dataALL",getCurrentItemList().toString())
         val myPlayer = getCurrentItemList().filter { it.player == player }
 
         val ids = myPlayer.map { it.id }
 
-        val horizontal = horizontal(id, ids)
-        val vertical = vertical(id, ids)
-        var diagonal = diagonal(id, ids)
-        if (horizontal || vertical || diagonal) {
+        val horizontal = horizontal(ids)
+        val vertical = vertical(ids)
+        var diagonal = diagonal(ids)
+        var reverseDiagonal = reverseDiagonal(ids)
+
+        notifyDataSetChanged()
+
+
+        if (vertical || horizontal || diagonal || reverseDiagonal) {
             Log.e(
                 "My player win :",
-                "$player : WIN IN ${if (horizontal) "H" else if (vertical) "V" else "D"}"
+                "$player : WIN IN  D"
             )
             return true
         }
-
-//        Log.e("My Player Name", player.toString())
-//        Log.e(" my ID", ids.toString())
         return false
     }
 
-    fun horizontal(id: Int, ids: List<Int>): Boolean {
-        //       1  = 7 / 7
-        val row = id / Constant.columnCount
-        //       1 =7  % 7
-        val column = id % Constant.columnCount
+    private fun horizontal(ids: List<Int>): Boolean {
+        var isWin = false
 
-        var endData = 0
-        if (column > 0) {
-            endData = (row + 1) * Constant.columnCount
-        } else {
-            // 7   =  1  * 7
-            endData = row * Constant.columnCount
-        }
+        // check rows for a win
+        for (row in 0 until Constant.rowCount) {
+            for (col in 1..Constant.columnCount - 3) {
 
-        var startData = 0
+                if (ids.contains(getId(row, col)) &&
+                    ids.contains(getId(row, col + 1)) &&
+                    ids.contains(getId(row, col + 2)) &&
+                    ids.contains(getId(row, col + 3))
+                ) {
 
-        if (column > 0) {
-            startData = (row * Constant.columnCount) + 1
-        } else {
-            // 7
-            startData = ((row - 1) * Constant.columnCount) + 1
-        }
-//                  1               7-3=4
-        for (i in startData..endData - 3) {
-
-            val middleCoil = ids.find { it in startData..endData && it == i }
-            val right1Coil = ids.find { it in startData..endData && it == i + 1 }
-            val right2Coil = ids.find { it in startData..endData && it == i + 2 }
-            val right3Coil = ids.find { it in startData..endData &&  it == i + 3 }
-
-            if (middleCoil != null && right1Coil != null && right2Coil != null && right3Coil != null) {
-                Log.e("all",getCurrentItemList().toString())
-
-                getCurrentItemList().find { it.id  == middleCoil}?.isWinner = true
-                getCurrentItemList().find { it.id  == right1Coil}?.isWinner = true
-                getCurrentItemList().find { it.id  == right2Coil}?.isWinner = true
-                getCurrentItemList().find { it.id  == right3Coil}?.isWinner = true
-                getCurrentItemList().find { it.id  == middleCoil}?.player = if (currentPlayer ==  Constant.Player.RedPlayer) Constant.Player.RedPlayer else Constant.Player.YellowPlayer
-                getCurrentItemList().find { it.id  == right1Coil}?.player = if (currentPlayer ==  Constant.Player.RedPlayer) Constant.Player.RedPlayer else Constant.Player.YellowPlayer
-                getCurrentItemList().find { it.id  == right2Coil}?.player = if (currentPlayer ==  Constant.Player.RedPlayer) Constant.Player.RedPlayer else Constant.Player.YellowPlayer
-                getCurrentItemList().find { it.id  == right3Coil}?.player = if (currentPlayer ==  Constant.Player.RedPlayer) Constant.Player.RedPlayer else Constant.Player.YellowPlayer
-                notifyDataSetChanged()
-                return true
+                    var idList = listOf<Int>(
+                        getId(row, col),
+                        getId(row, col + 1),
+                        getId(row, col + 2),
+                        getId(row, col + 3)
+                    )
+                    insertWinnerData(
+                        idList,
+                        true,
+                        currentPlayer)
+                    isWin = true
+                }
             }
         }
 
-
-//
-//        val start = (row * Constant.columnCount)  + column
-//        //start  14  = (2 * 7)
-//
-//        //          13       (14 + 7 = 22)  - 4
-//        for (i in start..(start + Constant.columnCount) - 4) {
-//            val firstCoil = ids.find { it == i }
-//            val secondCoil = ids.find { it == i + 1 }
-//            val thirdCoil = ids.find { it == i + 2 }
-//            val fourthCoil = ids.find { it == i + 3 }
-//
-//            if (firstCoil != null && secondCoil != null && thirdCoil != null && fourthCoil != null) {
-//                return true
-//            }
-//        }
-
-        return false // no horizontal win found
+        return isWin
     }
 
-    fun vertical(id: Int, ids: List<Int>): Boolean {
-        //          23
-        val firstCoil = ids.find {
-            it == id
-        }
-        val secondCoil = ids.find {
-            //      23 - 7 = 16
-            it == id - Constant.columnCount
-        }
-        val thirdCoil = ids.find {
-            // 23 - (2* 7 = 14) = 9
-            it == id - (2 * Constant.columnCount)
-        }
-        val fourthCoil = ids.find {
-            // 23 - (3* 7 = 21) = 2
-            it == id - (3 * Constant.columnCount)
-        }
-//        Log.e("first", firstCoil.toString())
-//        Log.e("second", secondCoil.toString())
-//        Log.e("third", thirdCoil.toString())
-//        Log.e("fouth", fourthCoil.toString())
 
-        val isWinPlayer =
-            firstCoil != null && secondCoil != null && thirdCoil != null && fourthCoil != null
-        if (isWinPlayer) {
-            return true
+    fun vertical(ids: List<Int>): Boolean {
+        var isWin = false
+
+        // check columns for a win
+        for (col in 1 .. Constant.columnCount) {
+            for (row in 0 until Constant.rowCount - 3) {
+//                2* 7 =14 +0 =14
+//               3* 7 =21 +0 =8
+//               4* 7 =28 +0 =15
+//               5* 7 =35 +0 =22
+
+
+                (row * Constant.columnCount) + col
+                if (ids.contains(getId(row, col)) &&
+                    ids.contains(getId(row + 1, col)) &&
+                    ids.contains(getId(row + 2, col)) &&
+                    ids.contains(getId(row + 3, col))
+                ) {
+
+                    var idList = listOf<Int>(
+                        getId(row, col),
+                        getId(row + 1, col),
+                        getId(row + 2, col),
+                        getId(row + 3, col)
+                    )
+                    insertWinnerData(
+                        idList,
+                        true,
+                        currentPlayer)
+                    isWin = true
+                }
+            }
         }
-        return false
+
+        return isWin
     }
 
-    fun diagonal(id: Int, ids: List<Int>): Boolean {
+    fun diagonal(ids: List<Int>): Boolean {
+        var isWin = false
+
+        for (row in 3 until Constant.rowCount) {
+            for (col in 1..Constant.columnCount - 3) {
+
+                // 22,16,10,4
+                // 6 => 39,33
+
+                //5 * 7 = 35+4 =39
+                (row * Constant.columnCount) + col
+
+                //                   5 * 7 = 35+4 =39
+                //val firstCoin =    (row * Constant.columnCount) + col
+                //                  4 * 7 = 14+5 =19
+                //val sCoin =    getId(row - 1, col + 1)
+//                                  3* 7 = 7+6 =13
+                //val tCoin =   getId(row - 2, col + 2)
+//                                  2* 7 = 0+7=7
+                //val fCoin =    getId(row - 3, col + 3)
 
 
-        //       1  = 7 / 7
-        val row = id / Constant.columnCount
-        //       1 =7  % 7
-        val column = id % Constant.columnCount
-
-        var endData = 0
-        if (column > 0) {
-            endData = (row + 1) * Constant.columnCount
-        } else {
-            // 7   =  1  * 7
-            endData = row * Constant.columnCount
+                if (ids.contains(getId(row, col)) &&
+                    ids.contains(getId(row - 1, col + 1)) &&
+                    ids.contains(getId(row - 2, col + 2)) &&
+                    ids.contains(getId(row - 3, col + 3))
+                ) {
+                    var idList = listOf<Int>(
+                        getId(row, col),
+                        getId(row - 1, col + 1),
+                        getId(row - 2, col + 2),
+                        getId(row - 3, col + 3)
+                    )
+                    insertWinnerData(
+                        idList,
+                        true,
+                        currentPlayer
+                    )
+                    isWin = true
+                }
+            }
         }
 
-        var startData = 0
-
-        if (column > 0) {
-            startData = (row * Constant.columnCount) + 1
-        } else {
-            // 7
-            startData = ((row - 1) * Constant.columnCount) + 1
-        }
-
-
-
-
-        // bottom left to top right
-        //                                      26
-        val bottomLeftCoil3 = ids.find { id <= startData && it == (id - (3 * Constant.columnCount)) + 3 }
-        val bottomLeftCoil2 = ids.find { id <= startData && it == (id - (2 * Constant.columnCount)) + 2 }
-        val bottomLeftCoil1 = ids.find { id <= startData && it == (id - Constant.columnCount) + 1 }
-
-        //                                      26
-        val bottomLeftMiddleCoil = ids.find { it == id }
-        //                                  (7 + 7) - 1
-        val topRightCoil1 = ids.find { id >= endData && it == (id + Constant.columnCount) - 1 }
-        val topRightCoil2 = ids.find { id >= endData && it == (id + (2 * Constant.columnCount)) - 2 }
-        val topRightCoil3 = ids.find { id >= endData && it == (id + (3 * Constant.columnCount)) - 3 }
-
-
-
-
-        Log.e("firstLeft", bottomLeftCoil1.toString())
-        Log.e("secondCoilLeft", bottomLeftCoil2.toString())
-        Log.e("thirdCoilLeft", bottomLeftCoil3.toString())
-        Log.e("firstCoil", bottomLeftMiddleCoil.toString())
-        Log.e("secondCoil", topRightCoil1.toString())
-        Log.e("thirdCoil", topRightCoil2.toString())
-        Log.e("fourthCoil", topRightCoil3.toString())
-
-
-        // bottom right to top left
-        val bottomRightCoil3 = ids.find { it == (id - (3 * Constant.columnCount)) - 3 }
-        val bottomRightCoil2 = ids.find { it == (id - (2 * Constant.columnCount)) - 2 }
-        val bottomRightCoil1 = ids.find { it == (id - Constant.columnCount) - 1 }
-
-        val bottomRight = ids.find { it == id }
-        //                                  (7 + 7) - 1
-        val topLeftCoil1 = ids.find { it == (id + Constant.columnCount) + 1 }
-        val topLeftCoil2 = ids.find { it == (id + (2 * Constant.columnCount)) + 2 }
-        val topLeftCoil3 = ids.find { it == (id + (3 * Constant.columnCount)) + 3 }
-
-
-        if ((bottomRightCoil3 != null && bottomRightCoil2 != null && bottomRightCoil1 != null && bottomRight != null)
-            || (bottomRightCoil2 != null && bottomRightCoil1 != null && bottomRight != null && topLeftCoil1 != null)
-            || (bottomRightCoil1 != null && bottomRight != null && topLeftCoil1 != null && topLeftCoil2 != null)
-            || (bottomRight != null && topLeftCoil1 != null && topLeftCoil2 != null && topLeftCoil3 != null)
-        ) {
-            return true
-        }
-
-
-        if ((bottomLeftCoil3 != null && bottomLeftCoil2 != null && bottomLeftCoil1 != null && bottomLeftMiddleCoil != null)
-            || (bottomLeftCoil2 != null && bottomLeftCoil1 != null && bottomLeftMiddleCoil != null && topRightCoil1 != null)
-            || (bottomLeftCoil1 != null && bottomLeftMiddleCoil != null && topRightCoil1 != null && topRightCoil2 != null)
-            || (bottomLeftMiddleCoil != null && topRightCoil1 != null && topRightCoil2 != null && topRightCoil3 != null)
-        ) {
-            return true
-        }
-
-        return false // no diagonal win found
+        return isWin
     }
 
-//    fun diagonal(id: Int, ids: List<Int>): Boolean {
-//
-//        // 4
-//        val row = id / Constant.columnCount
-//        //         4 / 7 = 0
-//        val column = id % Constant.columnCount
-//        //            4 %   7 = 4
-//
-//        // 7                (0   *  7 = 0)  + 1 =  4
-//        for (i in 0..((row * Constant.columnCount) + column) step (Constant.columnCount)) {
-//            //                              7
-//            val firstCoil = ids.find { it == i }
-//            //                                (7 + 7) - 1 = 13
-//            val secondCoil = ids.find { it == i + Constant.columnCount - 1 }
-//            //                                      (7 + 14) - 1 = 20
-//            val thirdCoil = ids.find { it == i + 2 * (Constant.columnCount - 1) }
-//            //                                        (7 +21) - 1 = 27
-//            val fourthCoil = ids.find { it == i + 3 * (Constant.columnCount - 1) }
-//
-//            if (firstCoil != null && secondCoil != null && thirdCoil != null && fourthCoil != null) {
-//                return true
-//            }
-//        }
-//
-//        // bottom right to top left
-//        val startDownward = id - (row * Constant.columnCount - column)
-//        //    =  1 - (0  * 7  - 1 )
-//        for (i in startDownward..startDownward + (row * Constant.columnCount - column) step (Constant.columnCount)) {
-//            val firstCoil = ids.find { it == i }
-//            val secondCoil = ids.find { it == i + Constant.columnCount + 1 }
-//            val thirdCoil = ids.find { it == i + 2 * (Constant.columnCount + 1) }
-//            val fourthCoil = ids.find { it == i + 3 * (Constant.columnCount + 1) }
-//
-//            if (firstCoil != null && secondCoil != null && thirdCoil != null && fourthCoil != null) {
-//                return true
-//            }
-//        }
-//
-//        return false // no diagonal win found
-//    }
+    fun reverseDiagonal(ids: List<Int>): Boolean {
+        var isWin = false
+
+        for (row in 3 until Constant.rowCount) {
+            for (col in Constant.columnCount downTo Constant.columnCount - 3) {
+
+                //3,7  => 21 + 7  = 28
+                //3,7  => 14 + 6  = 20
+                //3,7  => 7 + 5  = 12
+                //3,7  => 0 + 4  = 4
+
+
+                //3,6  => 21 + 6  = 27
+                //3,6  => 14 + 5  = 19
+                //3,6  => 7 + 4= 11
+                //3,6  => 0 + 3 = 3
+
+
+                //3,5  => 21 + 5  = 26
+                //3,5  => 14 + 4  = 18
+                //3,5  => 7 + 3 = 10
+                //3,5  => 0 + 2  = 2
+
+                //3,4  => 21 + 4  = 25
+                //3,4  => 14 + 3  = 17
+                //3,4  => 7 + 2 = 9
+                //3,4  => 0 + 1  = 1
+
+
+                //5,5  => 35 + 5  = 41
+                //5,5  => 28 + 4  = 32
+                //5,5  => 21 + 3 = 24
+                //5,5  => 14 + 2  = 16
+
+
+                //5,4  => 42 + 4  = 46
+                //5,4  => 35 + 3  = 38
+                //5,4  => 28 + 2 = 30
+                //5,4  => 21 + 1  = 22
+
+
+
+                if (ids.contains(getId(row, col)) &&
+                    ids.contains(getId(row - 1, col - 1)) &&
+                    ids.contains(getId(row - 2, col - 2)) &&
+                    ids.contains(getId(row - 3, col - 3))
+                ) {
+                    var idList = listOf<Int>(
+                        getId(row, col),
+                        getId(row - 1, col - 1),
+                        getId(row - 2, col - 2),
+                        getId(row - 3, col - 3)
+                    )
+                    insertWinnerData(
+                        idList,
+                        true,
+                        currentPlayer)
+                    isWin = true
+                }
+            }
+        }
+
+        return isWin
+    }
+
+    fun getId(row: Int, col: Int): Int {
+        return (row * Constant.columnCount) + col
+    }
+
+    private fun insertWinnerData(ids: List<Int>, isWinner: Boolean, color: Constant.Player) {
+        ids.forEach { id ->
+            getCurrentItemList().find { it.id == id }?.isWinner = isWinner
+            getCurrentItemList().find { it.id == id }?.player = color
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
